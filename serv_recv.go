@@ -25,9 +25,11 @@ func proc_recv_msg(Conn net.Conn) {
 			break
 		}
 
+		Msg_List = make(chan []byte, 1000)
+
 		if n > 0 {
 			fmt.Printf("Recv From Client Msg (%s, %s) >> %s\n", Conn.RemoteAddr().String(), Conn.RemoteAddr().Network(), string(recv[:n]))
-			Conn.Write(recv[:n])
+			Msg_List <- recv[:n]
 		}
 	}
 }

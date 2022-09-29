@@ -16,7 +16,7 @@ func proc_recv_msg(Conn net.Conn) {
 			Client 로부터 msg를 수신한다.
 		*/
 		n, error := Conn.Read(recv)
-		if error == nil {
+		if error != nil {
 			if error == io.EOF {
 				fmt.Println("Connection is Close by Client\n", Conn.RemoteAddr().String())
 			}
@@ -26,7 +26,7 @@ func proc_recv_msg(Conn net.Conn) {
 		}
 
 		if n > 0 {
-			fmt.Println(string(recv[:n]))
+			fmt.Printf("Recv From Client Msg (%s, %s) >> %s\n", Conn.RemoteAddr().String(), Conn.RemoteAddr().Network(), string(recv[:n]))
 			Conn.Write(recv[:n])
 		}
 	}

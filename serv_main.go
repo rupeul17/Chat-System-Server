@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"os"
 )
 
 func main() {
+
+	fmt.Println("Chat System Loading... OK.")
 
 	/* 1. 환경설정 init */
 	listen, error := net.Listen("tcp", ":10000")
@@ -30,6 +33,7 @@ func main() {
 		/*
 			연결된 conn에서 메시지를 수신할 goroutine을 만든다.
 		*/
+		fmt.Printf("Client Login:: Address(%s), Type(%s)\n", conn.RemoteAddr().String(), conn.RemoteAddr().Network())
 		go proc_recv_msg(conn)
 	}
 }

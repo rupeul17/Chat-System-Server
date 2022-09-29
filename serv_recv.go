@@ -22,6 +22,15 @@ func proc_recv_msg(Conn net.Conn) {
 			}
 
 			log.Println(error.Error())
+
+			for idx := range Client_List {
+				if Client_List[idx] == Conn {
+					fmt.Printf("(%s,%s) Disconnecting... ", Conn.RemoteAddr().String(), Conn.RemoteAddr().Network())
+					Client_List[idx] = nil
+					Client_cnt--
+					fmt.Println("Disconnect success... Current Session : ", Client_cnt)
+				}
+			}
 			break
 		}
 

@@ -10,12 +10,11 @@ import (
 /*
 	global variable
 */
+var Client_cnt int
 var Client_List [3]net.Conn
 var Msg_List chan []byte
 
 func main() {
-
-	var Client_cnt int
 
 	fmt.Println("Chat System Loading... OK.")
 
@@ -27,7 +26,6 @@ func main() {
 	}
 
 	go proc_send_msg()
-	go proc_check_connection()
 
 	/*
 		service loop
@@ -45,7 +43,7 @@ func main() {
 			현재 활성화된 세션이 최대일 경우 접속을 해제한다.
 		*/
 		if Client_cnt >= 3 {
-			fmt.Println("Session is full... ")
+			fmt.Println("Session is full... Current Session : ", Client_cnt)
 			conn.Close()
 		}
 

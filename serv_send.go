@@ -1,17 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func proc_send_msg() {
 
-	for range Msg_List {
-		Msg := <-Msg_List
-		fmt.Printf("Msg Send to Client>> %s\n", Msg)
+	for {
+		select {
+		case Msg, ok := <-Msg_List:
+			if ok {
 
-		for idx := range Client_List {
-			if Client_List[idx] != nil {
-				Client_List[idx].Write(Msg)
+				fmt.Printf("Msg Send to Client>> %s\n", Msg)
+
+				for idx := range Client_List {
+					if Client_List[idx] != nil {
+						Head := []byte(Client_List[idx].RemoteAddr().String() + " >> ")
+						Msg = append(Head, Msg...)
+						Client_List[idx].Write(Msg)
+					}
+				}
+			} else {
+				fmt.Printf("Channel Close\n")
 			}
+		default:
+
 		}
+		time.Sleep(1 * time.Second)
 	}
 }

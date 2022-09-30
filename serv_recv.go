@@ -34,10 +34,10 @@ func proc_recv_msg(Conn net.Conn) {
 			break
 		}
 
-		Msg_List = make(chan []byte, 1000)
+		Msg_List = make(chan []byte, 4096)
 
 		if n > 0 {
-			fmt.Printf("Recv From Client Msg (%s, %s) >> %s\n", Conn.RemoteAddr().String(), Conn.RemoteAddr().Network(), string(recv[:n]))
+			fmt.Printf("Recv From Client Msg (%s, %s)\n", Conn.RemoteAddr().String(), Conn.RemoteAddr().Network())
 			Msg_List <- recv[:n]
 		}
 	}

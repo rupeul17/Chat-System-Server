@@ -12,12 +12,10 @@ func proc_send_msg() {
 		case Msg, ok := <-Msg_List:
 			if ok {
 
-				fmt.Printf("Msg Send to Client>> %s\n", Msg)
+				fmt.Printf("Msg Send to Client>>\n")
 
 				for idx := range Client_List {
 					if Client_List[idx] != nil {
-						Head := []byte(Client_List[idx].RemoteAddr().String() + " >> ")
-						Msg = append(Head, Msg...)
 						Client_List[idx].Write(Msg)
 					}
 				}

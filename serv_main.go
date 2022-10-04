@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 	"time"
 )
 
@@ -12,10 +13,13 @@ import (
 var Client_cnt int
 var Client_List [3]net.Conn
 var Msg_List chan []byte
+var Max_Session_Cnt int
 
 func main() {
 
 	fmt.Println("Chat System Loading... OK.")
+
+	Max_Session_Cnt = 3
 
 	/*
 		고루틴을 생성한다.
@@ -29,21 +33,43 @@ func main() {
 		service loop
 	*/
 	for {
+		ClearTerminal()
 		fmt.Println("==========Chat System Command==========")
 		fmt.Println(" 1. All Connection destroy.")
 		fmt.Println(" 2. Change Configuration.")
 		fmt.Println(" 0. Shutdown System.")
+		fmt.Println("=======================================")
 
 		cmd_num := input_number()
 
-		if cmd_num == 1 {
+		switch cmd_num {
+		case 1:
+			/*
+				현재 연결된 모든 세션을 끊는다.
+			*/
+			for idx := range Client_List {
+				if Client_List[idx] != nil {
+					Client_List[idx].Close()
+					Client_List[idx] = nil
+				}
+			}
+			fmt.Println("All Session is clear...")
 
-		} else if cmd_num == 2 {
+		case 2:
+			/*
+				설정을 변경한다.
+			*/
+			proc_chg_conf()
 
-		} else if cmd_num == 0 {
+		case 0:
+			/*
+				server를 종료한다.
+			*/
+			fmt.Println("Chat System Shutdown")
+			os.Exit(0)
 
 		}
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 }

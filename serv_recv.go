@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"io"
 	"log"
@@ -8,9 +9,38 @@ import (
 	"os"
 )
 
+func proc_check_login_info(body_buf []byte) int {
+
+	var count int
+	login_info := DecodeToLoginInfo(body_buf)
+
+	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/member_db")
+	if err != nil {
+		log.Println(err.Error())
+		return -1
+	}
+
+	defer db.Close()
+
+	result, err := db.Query("SELECT count(*) FROM member WHERE ID=? AND PASSWD=?", login_info.Id, login_info.Pwd)
+	if err != nil {
+		log.Println(err.Error())
+		return -1
+	}
+
+	for result.Next() {
+		if err := result.Scan(&count); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return count
+}
+
 func proc_recv_msg(Conn net.Conn) {
 
 	recv := make([]byte, 4096)
+	Msg_List = make(chan []byte, 4096)
 
 	for {
 		/*
@@ -35,11 +65,23 @@ func proc_recv_msg(Conn net.Conn) {
 			break
 		}
 
-		Msg_List = make(chan []byte, 4096)
-
 		if n > 0 {
 			fmt.Printf("Recv From Client Msg (%s, %s)\n", Conn.RemoteAddr().String(), Conn.RemoteAddr().Network())
-			Msg_List <- recv[:n]
+
+			clnt_msg := DecodeToMyMsg(recv)
+
+			switch clnt_msg.Head.MsgType {
+			case 2:
+				switch proc_check_login_info(clnt_msg.Body) {
+				case -1:
+				case 0:
+					proc_send_res_msg(Conn, 400)
+				case 1:
+					proc_send_res_msg(Conn, 200)
+				}
+			case 1:
+				Msg_List <- recv[:n]
+			}
 		}
 	}
 }

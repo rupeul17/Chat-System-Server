@@ -7,6 +7,12 @@ type Header struct {
 	MsgType int
 	Ip      string
 	BodyLen int
+	res     int
+}
+
+type Login struct {
+	Id  string
+	Pwd string
 }
 
 type MyMsg struct {

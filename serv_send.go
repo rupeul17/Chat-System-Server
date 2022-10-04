@@ -2,8 +2,32 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net"
 	"time"
 )
+
+func proc_send_res_msg(conn net.Conn, r int) {
+
+	msg := MyMsg{
+		Head: Header{
+			MsgType: 9,
+			Ip:      conn.LocalAddr().String(),
+			BodyLen: 9,
+			res:     r,
+		},
+	}
+
+	bytedata := EncodeToBytes(msg)
+
+	_, error := conn.Write(bytedata)
+	if error != nil {
+		log.Println(error.Error())
+	}
+
+	fmt.Println("MSG SEND >> res : ", msg.Head.res)
+
+}
 
 func proc_send_msg() {
 

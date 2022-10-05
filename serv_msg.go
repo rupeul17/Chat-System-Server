@@ -5,9 +5,9 @@ package main
 */
 type Header struct {
 	MsgType int
-	Ip      string
 	BodyLen int
-	res     int
+	Res     int
+	Ip      string
 }
 
 type Login struct {

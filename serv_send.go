@@ -13,8 +13,8 @@ func proc_send_res_msg(conn net.Conn, r int) {
 		Head: Header{
 			MsgType: 9,
 			Ip:      conn.LocalAddr().String(),
-			BodyLen: 9,
-			res:     r,
+			Res:     r,
+			BodyLen: 0,
 		},
 	}
 
@@ -25,11 +25,11 @@ func proc_send_res_msg(conn net.Conn, r int) {
 		log.Println(error.Error())
 	}
 
-	fmt.Println("MSG SEND >> res : ", msg.Head.res)
+	fmt.Println("MSG SEND >> res : ", msg.Head.Res)
 
 }
 
-func proc_send_msg() {
+func proc_broadcast() {
 
 	for {
 		select {

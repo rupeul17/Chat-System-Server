@@ -42,6 +42,8 @@ func proc_recv_msg(Conn net.Conn) {
 	recv := make([]byte, 4096)
 	Msg_List = make(chan []byte, 4096)
 
+	defer Conn.Close()
+
 	for {
 		/*
 			Client 로부터 msg를 수신한다.
@@ -86,7 +88,7 @@ func proc_recv_msg(Conn net.Conn) {
 	}
 }
 
-func proc_check_accept() {
+func proc_listen() {
 
 	/* 1. 환경설정 init */
 	listen, error := net.Listen("tcp", ":10000")

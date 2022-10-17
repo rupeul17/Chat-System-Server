@@ -8,7 +8,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func proc_chg_admin_passwd() {
+func ChangeAdminInfo() {
+
 	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/member_db")
 	if err != nil {
 		log.Println(err.Error())
@@ -30,10 +31,11 @@ func proc_chg_admin_passwd() {
 	if err != nil {
 		log.Println(err.Error())
 	}
+
 	fmt.Println("update count : ", nRow)
 }
 
-func proc_crte_user_account() {
+func CreateUserAccount() {
 	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/member_db")
 	if err != nil {
 		log.Println(err.Error())
@@ -61,7 +63,7 @@ func proc_crte_user_account() {
 	fmt.Println("insert count : ", nRow)
 }
 
-func proc_chg_user_account() {
+func ChangeUserAccount() {
 	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/member_db")
 	if err != nil {
 		log.Println(err.Error())
@@ -89,7 +91,7 @@ func proc_chg_user_account() {
 	fmt.Println("update count : ", nRow)
 }
 
-func proc_del_user_account() {
+func DeleteUserAccount() {
 	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/member_db")
 	if err != nil {
 		log.Println(err.Error())
@@ -114,18 +116,18 @@ func proc_del_user_account() {
 	fmt.Println("delete count : ", nRow)
 }
 
-func proc_chg_max_sess_cnt() {
+func ChagneMaxClientConnCnt() {
 
 	ClearTerminal()
 	fmt.Print("Entered Session Cnt: ")
 
 	session_cnt := input_number()
 
-	fmt.Printf("Max Session Count Changed : (%d) -> (%d)\n", Max_Session_Cnt, session_cnt)
-	Max_Session_Cnt = session_cnt
+	fmt.Printf("Max Session Count Changed : (%d) -> (%d)\n", MaxClientConnCnt, session_cnt)
+	MaxClientConnCnt = session_cnt
 }
 
-func proc_chg_conf() {
+func ChangeConfiguration() {
 	ClearTerminal()
 	fmt.Println("==========Chat System Command==========")
 	fmt.Println(" 1. Change Max Session Count.")
@@ -139,15 +141,15 @@ func proc_chg_conf() {
 
 	switch cmd_num {
 	case 1:
-		proc_chg_max_sess_cnt()
+		ChagneMaxClientConnCnt()
 	case 2:
-		proc_chg_admin_passwd()
+		ChangeAdminInfo()
 	case 3:
-		proc_crte_user_account()
+		CreateUserAccount()
 	case 4:
-		proc_chg_user_account()
+		ChangeUserAccount()
 	case 5:
-		proc_del_user_account()
+		DeleteUserAccount()
 	default:
 
 	}

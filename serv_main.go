@@ -12,10 +12,10 @@ import (
 /*
 	global variable
 */
-var Client_cnt int
-var Client_List [3]net.Conn
-var Msg_List chan []byte
-var Max_Session_Cnt int
+var ClientConnCnt int
+var ClientConnList [100]net.Conn
+var ClientMsgBodyList chan []byte
+var MaxClientConnCnt int
 
 func main() {
 
@@ -25,7 +25,7 @@ func main() {
 
 	fmt.Println("Chat System Loading... OK.")
 
-	Max_Session_Cnt = 3
+	MaxClientConnCnt = 3
 
 	/*
 		고루틴을 생성한다.
@@ -33,8 +33,8 @@ func main() {
 		2) command_msg : Command 처리
 	*/
 
-	go proc_broadcast()
-	go proc_listen()
+	go BroadcastToClient()
+	go ConnectToClient()
 
 	go func() {
 		/*
@@ -64,10 +64,10 @@ func main() {
 				/*
 					현재 연결된 모든 세션을 끊는다.
 				*/
-				for idx := range Client_List {
-					if Client_List[idx] != nil {
-						Client_List[idx].Close()
-						Client_List[idx] = nil
+				for idx := range ClientConnList {
+					if ClientConnList[idx] != nil {
+						ClientConnList[idx].Close()
+						ClientConnList[idx] = nil
 					}
 				}
 				fmt.Println("All Session is clear...")
@@ -76,7 +76,7 @@ func main() {
 				/*
 					설정을 변경한다.
 				*/
-				proc_chg_conf()
+				ChangeConfiguration()
 
 			case 0:
 				/*

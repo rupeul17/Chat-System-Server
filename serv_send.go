@@ -7,12 +7,11 @@ import (
 	"time"
 )
 
-func proc_send_res_msg(conn net.Conn, r int) {
+func SendMessageToClient(conn net.Conn, r int) {
 
 	msg := MyMsg{
 		Head: Header{
-			MsgType: 9,
-			Ip:      conn.LocalAddr().String(),
+			MsgType: TYPE_LOGIN,
 			Res:     r,
 			BodyLen: 0,
 		},
@@ -24,30 +23,23 @@ func proc_send_res_msg(conn net.Conn, r int) {
 	if error != nil {
 		log.Println(error.Error())
 	}
-
-	fmt.Println("MSG SEND >> res : ", msg.Head.Res)
-
 }
 
-func proc_broadcast() {
+func BroadcastToClient() {
 
 	for {
 		select {
-		case Msg, ok := <-Msg_List:
+		case Msg, ok := <-ClientMsgBodyList:
 			if ok {
-
-				fmt.Printf("Msg Send to Client>>\n")
-
-				for idx := range Client_List {
-					if Client_List[idx] != nil {
-						Client_List[idx].Write(Msg)
+				for idx := range ClientConnList {
+					if ClientConnList[idx] != nil {
+						ClientConnList[idx].Write(Msg)
 					}
 				}
 			} else {
 				fmt.Printf("Channel Close\n")
 			}
 		default:
-
 		}
 		time.Sleep(1 * time.Second)
 	}

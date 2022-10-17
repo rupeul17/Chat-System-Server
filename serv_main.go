@@ -33,8 +33,8 @@ func main() {
 		2) command_msg : Command 처리
 	*/
 
-	go BroadcastToClient()
-	go ConnectToClient()
+	go BroadcastHandler()
+	go ConnectHandler()
 
 	go func() {
 		/*

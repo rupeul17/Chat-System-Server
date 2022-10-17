@@ -25,7 +25,7 @@ func SendMessageToClient(conn net.Conn, r int) {
 	}
 }
 
-func BroadcastToClient() {
+func BroadcastHandler() {
 
 	for {
 		select {

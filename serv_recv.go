@@ -43,7 +43,7 @@ func CheckLoginInfo(body_buf []byte) int {
 	}
 }
 
-func ReceiveMessageFromClient(Conn net.Conn) {
+func RequestHandler(Conn net.Conn) {
 
 	recv := make([]byte, 4096)
 	ClientMsgBodyList = make(chan []byte, 4096)
@@ -80,19 +80,14 @@ func ReceiveMessageFromClient(Conn net.Conn) {
 			case TYPE_MESSAGE:
 				ClientMsgBodyList <- recv[:n]
 			case TYPE_LOGIN:
-				ret := CheckLoginInfo(clnt_msg.Body)
-				if ret == OK {
-					SendMessageToClient(Conn, OK)
-				} else {
-					SendMessageToClient(Conn, ret)
-				}
+				SendMessageToClient(Conn, CheckLoginInfo(clnt_msg.Body))
 			default:
 			}
 		}
 	}
 }
 
-func ConnectToClient() {
+func ConnectHandler() {
 
 	/* 1. 환경설정 init */
 	listen, error := net.Listen("tcp", ":10000")
@@ -130,6 +125,6 @@ func ConnectToClient() {
 			연결된 conn에서 메시지를 수신할 goroutine을 만든다.
 		*/
 		fmt.Printf("Client Login:: Address(%s), Type(%s), Current Client Count(%d)\n", conn.RemoteAddr().String(), conn.RemoteAddr().Network(), ClientConnCnt)
-		go ReceiveMessageFromClient(conn)
+		go RequestHandler(conn)
 	}
 }

@@ -119,11 +119,16 @@ func DeleteUserAccount() {
 func ChagneMaxClientConnCnt() {
 
 	ClearTerminal()
-	fmt.Print("Entered Session Cnt: ")
+	fmt.Print("Entered Session Cnt (MAX : 100): ")
 
 	session_cnt := input_number()
 
-	fmt.Printf("Max Session Count Changed : (%d) -> (%d)\n", MaxClientConnCnt, session_cnt)
+	if session_cnt > 100 {
+		fmt.Println("Entered Count is over max count")
+		return
+	}
+
+	fmt.Printf("Max Client Connection Count Changed : (%d) -> (%d)\n", MaxClientConnCnt, session_cnt)
 	MaxClientConnCnt = session_cnt
 }
 
